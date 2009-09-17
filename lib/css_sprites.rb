@@ -20,3 +20,7 @@ module CSSSprites
 
 end
 
+class ActionView::Base
+    include CSSSprites::ViewMethods
+end
+

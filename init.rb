@@ -1,5 +1,2 @@
-
-class ActionView::Base
-    include CSSSprites::ViewMethods
-end
+require 'css_sprites'
 
