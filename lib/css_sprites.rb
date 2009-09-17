@@ -19,3 +19,4 @@ module CSSSprites
     self.config = read_config
 
 end
+
