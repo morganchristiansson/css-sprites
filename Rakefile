@@ -25,7 +25,7 @@ end
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "css-sprites"
+    gemspec.name = "morganchristiansson-css-sprites"
     gemspec.summary = "A Rails plugin for generate CSS sprites"
     gemspec.description = "The first step is generate the index:
 

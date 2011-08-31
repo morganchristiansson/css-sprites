@@ -71,6 +71,8 @@ module CSSSprites
 
             index = {}
 
+            File.open(CSSSprites::CSSFileName, "w") do |cssf|
+            puts "Generating css mappings #{CSSSprites::CSSFileName}"
             # Render the bundle
 
             image_types.each_pair do |mimetype, images|
@@ -78,6 +80,9 @@ module CSSSprites
 
                 bundle = BundleFile.new(mimetype)
                 images.each do |file_image, image|
+                    short_name = file_image.match(/\/(.*)\./)[1]
+                    cssf.puts ".#{short_name} { background-position: -0px -#{bundle.y}px; }"
+
                     index[file_image] = {
                         :x => 0,
                         :y => bundle.y,
@@ -85,18 +90,22 @@ module CSSSprites
                         :height => image.rows,
                         :bundle => bundle.file_name
                     }
-
                     bundle.add image
                 end
-
                 bundle.close
+                app = ImageTagHelper.new
+                cssf.puts ".#{CSSSprites.config["file-bundle"].singularize} { background-image: url(#{app.image_path bundle.file_name}); background-repeat: no-repeat; display: block; width: 48px; height: 48px; }"
+            end
             end
 
             # Dump the index
             File.open(CSSSprites::IndexFileName, "w") {|f| f.write Marshal.dump(index) }
         end
 
-
+        class ImageTagHelper
+            require 'rails/actionpack/lib/action_view/helpers/asset_tag_helper'
+            include ActionView::Helpers::AssetTagHelper
+        end
         def find_images(options)
             puts "Reading images..."
             max_width = options[:max_width]
@@ -128,9 +137,8 @@ module CSSSprites
                     image_types[image.mime_type] << [filename, image]
                 end
             end
-
             image_types
         end
-
     end
 end
+
