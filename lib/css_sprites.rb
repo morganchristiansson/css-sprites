@@ -1,13 +1,18 @@
 
 module CSSSprites
+    class MyRailtie < Rails::Railtie
+      initializer "my_railtie.configure_rails_initialization" do
+      ::CSSSprites::IndexFileName = File.join(Rails.root, "tmp", "css-sprites-index.marshal")
+      ::CSSSprites::CSSFileName = File.join(Rails.root, "public", "stylesheets", "sprite-mappings.css")
+      end
+    end
 
     ConfigFileName = "css-sprites.yml"
-    IndexFileName = File.join(RAILS_ROOT, "tmp", "css-sprites-index.marshal")
-    CSSFileName = File.join(RAILS_ROOT, "public", "stylesheets", "sprite-mappings.css")
 
 
     def self.read_config
-        filename = File.join(RAILS_ROOT, "config", ConfigFileName)
+        raise Rails.root if Rails.root.nil?
+        filename = File.join(Rails.root, "config", ConfigFileName)
         unless File.exist?(filename)
             STDERR.puts "Error in CSS Sprites: config/#{ConfigFileName} not found."
             return {}
@@ -17,7 +22,9 @@ module CSSSprites
     end
 
     mattr_accessor :config
-    self.config = read_config
+    def self.config
+      @@config ||= read_config
+    end
 end
 
 class ActionView::Base

@@ -29,7 +29,7 @@ module CSSSprites
                 bundle = Magick::Image.new(@width, @height) {|image| image.background_color = CSSSprites.config["background-color"] || "#ffff" }
 
                 @draw.draw bundle
-                bundle.write(File.join(RAILS_ROOT, "public", "images", file_name))
+                bundle.write(File.join(Rails.root, "public", "images", file_name))
 
                 @draw = nil
             end
@@ -58,7 +58,7 @@ module CSSSprites
                 end
 
                 bundles.uniq.each do |file|
-                    file = File.join(RAILS_ROOT, "public", "images", file)
+                    file = File.join(Rails.root, "public", "images", file)
                     File.delete(file) if File.exist?(file)
                 end
             end
@@ -99,18 +99,22 @@ module CSSSprites
             end
 
             # Dump the index
-            File.open(CSSSprites::IndexFileName, "w") {|f| f.write Marshal.dump(index) }
+            File.open(CSSSprites::IndexFileName, "wb") {|f| f.write Marshal.dump(index) }
         end
 
         class ImageTagHelper
-            require 'rails/actionpack/lib/action_view/helpers/asset_tag_helper'
+            def config
+                MyRailtie.config.action_controller
+            end
+            def controller
+            end
             include ActionView::Helpers::AssetTagHelper
         end
         def find_images(options)
             puts "Reading images..."
             max_width = options[:max_width]
             max_height = options[:max_height]
-            root_dir = File.join(RAILS_ROOT, "public", "images")
+            root_dir = File.join(Rails.root, "public", "images")
 
             image_types = {}
 
