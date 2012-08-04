@@ -3,7 +3,7 @@ module CSSSprites
     class MyRailtie < Rails::Railtie
       initializer "my_railtie.configure_rails_initialization" do
       ::CSSSprites::IndexFileName = File.join(Rails.root, "tmp", "css-sprites-index.marshal")
-      ::CSSSprites::CSSFileName = File.join(Rails.root, "public", "stylesheets", "sprite-mappings.css")
+      ::CSSSprites::CSSFileName = File.join(Rails.root, "app", "assets", "stylesheets", "sprite-mappings.css")
       end
     end
 
